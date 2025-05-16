@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ethers } from "ethers";
 
 const JWR_TOKEN = "0x4E54B5aeB805D826a6c1Ad8abC9cBf05E49457c3";
@@ -29,11 +29,10 @@ export default function Home() {
   const [swapAmount, setSwapAmount] = useState("");
 
   async function connect() {
-    if (!window.ethereum) return alert("Please install MetaMask");
+    if (!window.ethereum) return alert("Install MetaMask atau wallet lain dulu bro");
 
-    const chainIdHex = "0x40d1"; // 16601 in hex
     const chainParams = {
-      chainId: chainIdHex,
+      chainId: "0x40d1", // 16601
       chainName: "0G-Galileo-Testnet",
       nativeCurrency: {
         name: "OG",
@@ -41,7 +40,7 @@ export default function Home() {
         decimals: 18,
       },
       rpcUrls: ["https://evmrpc-testnet.0g.ai/"],
-      blockExplorerUrls: ["https://chainscan-galileo.0g.ai/"]
+      blockExplorerUrls: ["https://chainscan-galileo.0g.ai/"],
     };
 
     try {
@@ -49,16 +48,23 @@ export default function Home() {
         method: "wallet_addEthereumChain",
         params: [chainParams],
       });
+      console.log("✅ Chain switched");
     } catch (err) {
-      console.error("Switch chain error:", err);
+      console.error("❌ Gagal add/switch chain:", err);
     }
 
-    const provider = new ethers.BrowserProvider(window.ethereum);
-    await provider.send("eth_requestAccounts", []);
-    const signer = await provider.getSigner();
-    setProvider(provider);
-    setSigner(signer);
-    setAccount(await signer.getAddress());
+    try {
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      await provider.send("eth_requestAccounts", []);
+      const signer = await provider.getSigner();
+      const address = await signer.getAddress();
+      setProvider(provider);
+      setSigner(signer);
+      setAccount(address);
+      console.log("✅ Wallet connected:", address);
+    } catch (err) {
+      console.error("❌ Wallet connect error:", err);
+    }
   }
 
   async function approveAndAddLiquidity() {
@@ -77,7 +83,7 @@ export default function Home() {
 
     const deadline = Math.floor(Date.now() / 1000) + 60 * 10;
     await router.addLiquidity(JWR_TOKEN, USDT_TOKEN, amtA, amtB, 0, 0, account, deadline);
-    alert("Liquidity added successfully!");
+    alert("✅ Liquidity added!");
   }
 
   async function approveAndSwap() {
@@ -89,14 +95,8 @@ export default function Home() {
     if (allow < amt) await tokenFrom.approve(ROUTER, amt);
 
     const deadline = Math.floor(Date.now() / 1000) + 60 * 10;
-    await router.swapExactTokensForTokens(
-      amt,
-      0,
-      [swapFrom, swapTo],
-      account,
-      deadline
-    );
-    alert("Swap successful!");
+    await router.swapExactTokensForTokens(amt, 0, [swapFrom, swapTo], account, deadline);
+    alert("✅ Swap sukses!");
   }
 
   return (
@@ -174,4 +174,4 @@ export default function Home() {
       </div>
     </main>
   );
-                  }
+          }
