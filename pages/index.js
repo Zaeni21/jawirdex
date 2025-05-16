@@ -29,46 +29,55 @@ export default function Home() {
   const [swapAmount, setSwapAmount] = useState("");
 
   async function connect() {
-    if (!window.ethereum) return alert("Install MetaMask atau wallet lain dulu bro");
+  const ethereum = window.ethereum || window.okxwallet;
 
-    const chainParams = {
-      chainId: "0x40d1", // 16601
-      chainName: "0G-Galileo-Testnet",
-      nativeCurrency: { name: "OG", symbol: "OG", decimals: 18 },
-      rpcUrls: ["https://evmrpc-testnet.0g.ai/"],
-      blockExplorerUrls: ["https://chainscan-galileo.0g.ai/"]
-    };
-
-    try {
-      await window.ethereum.request({
-        method: "wallet_addEthereumChain",
-        params: [chainParams],
-      });
-      console.log("✅ Chain switched");
-    } catch (err) {
-      console.error("❌ Gagal add/switch chain:", err);
-    }
-
-    try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      await provider.send("eth_requestAccounts", []);
-      const signer = await provider.getSigner();
-      const address = await signer.getAddress();
-
-      setProvider(provider);
-      setSigner(signer);
-      setAccount(address);
-      console.log("✅ Wallet connected:", address);
-
-      const network = await provider.getNetwork();
-      console.log("🛰️ Connected to chainId:", network.chainId);
-      if (network.chainId !== 16601) {
-        alert("❗ Kamu belum berada di jaringan 0G Galileo (16601)");
-      }
-    } catch (err) {
-      console.error("❌ Wallet connect error:", err);
-    }
+  if (!ethereum) {
+    alert("❌ Wallet tidak terdeteksi. Coba buka lewat MetaMask / OKX Wallet browser.");
+    return;
   }
+
+  const chainParams = {
+    chainId: "0x40d1", // 16601
+    chainName: "0G-Galileo-Testnet",
+    nativeCurrency: {
+      name: "OG",
+      symbol: "OG",
+      decimals: 18,
+    },
+    rpcUrls: ["https://evmrpc-testnet.0g.ai/"],
+    blockExplorerUrls: ["https://chainscan-galileo.0g.ai/"]
+  };
+
+  try {
+    await ethereum.request({
+      method: "wallet_addEthereumChain",
+      params: [chainParams],
+    });
+    console.log("✅ Chain switched");
+  } catch (err) {
+    console.error("❌ Gagal add/switch chain:", err);
+  }
+
+  try {
+    const provider = new ethers.BrowserProvider(ethereum);
+    await provider.send("eth_requestAccounts", []);
+    const signer = await provider.getSigner();
+    const address = await signer.getAddress();
+
+    setProvider(provider);
+    setSigner(signer);
+    setAccount(address);
+    console.log("✅ Wallet connected:", address);
+
+    const network = await provider.getNetwork();
+    console.log("🛰️ Connected to chainId:", network.chainId);
+    if (network.chainId !== 16601) {
+      alert("❗ Kamu belum berada di jaringan 0G Galileo (16601)");
+    }
+  } catch (err) {
+    console.error("❌ Wallet connect error:", err);
+  }
+}
 
   async function approveAndAddLiquidity() {
     const tokenA = new ethers.Contract(JWR_TOKEN, ABI_ERC20, signer);
