@@ -30,12 +30,13 @@ async function connect() {
 
   try {
     await window.ethereum.request({
-      method: "wallet_addEthereumChain",
-      params: [chainParams],
-    });
-  } catch (err) {
-    console.error("Switch chain error:", err);
-  }
+  method: "wallet_addEthereumChain",
+  params: [chainParams],
+}).then(() => {
+  console.log("Successfully switched to 0G");
+}).catch((err) => {
+  console.error("Chain switch error:", err);
+});
 
   const provider = new ethers.BrowserProvider(window.ethereum);
   await provider.send("eth_requestAccounts", []);
