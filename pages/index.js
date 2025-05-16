@@ -34,13 +34,9 @@ export default function Home() {
     const chainParams = {
       chainId: "0x40d1", // 16601
       chainName: "0G-Galileo-Testnet",
-      nativeCurrency: {
-        name: "OG",
-        symbol: "OG",
-        decimals: 18,
-      },
+      nativeCurrency: { name: "OG", symbol: "OG", decimals: 18 },
       rpcUrls: ["https://evmrpc-testnet.0g.ai/"],
-      blockExplorerUrls: ["https://chainscan-galileo.0g.ai/"],
+      blockExplorerUrls: ["https://chainscan-galileo.0g.ai/"]
     };
 
     try {
@@ -58,18 +54,20 @@ export default function Home() {
       await provider.send("eth_requestAccounts", []);
       const signer = await provider.getSigner();
       const address = await signer.getAddress();
+
       setProvider(provider);
       setSigner(signer);
       setAccount(address);
       console.log("✅ Wallet connected:", address);
+
+      const network = await provider.getNetwork();
+      console.log("🛰️ Connected to chainId:", network.chainId);
+      if (network.chainId !== 16601) {
+        alert("❗ Kamu belum berada di jaringan 0G Galileo (16601)");
+      }
     } catch (err) {
       console.error("❌ Wallet connect error:", err);
     }
-    const network = await provider.getNetwork();
-console.log("🛰️ Connected to chainId:", network.chainId);
-if (network.chainId !== 16601) {
-  alert("❗ Kamu belum berada di jaringan 0G Galileo (16601)");
-}
   }
 
   async function approveAndAddLiquidity() {
@@ -86,7 +84,7 @@ if (network.chainId !== 16601) {
     if (allowA < amtA) await tokenA.approve(ROUTER, amtA);
     if (allowB < amtB) await tokenB.approve(ROUTER, amtB);
 
-    const deadline = Math.floor(Date.now() / 1000) + 60 * 10;
+    const deadline = Math.floor(Date.now() / 1000) + 600;
     await router.addLiquidity(JWR_TOKEN, USDT_TOKEN, amtA, amtB, 0, 0, account, deadline);
     alert("✅ Liquidity added!");
   }
@@ -99,7 +97,7 @@ if (network.chainId !== 16601) {
     const allow = await tokenFrom.allowance(account, ROUTER);
     if (allow < amt) await tokenFrom.approve(ROUTER, amt);
 
-    const deadline = Math.floor(Date.now() / 1000) + 60 * 10;
+    const deadline = Math.floor(Date.now() / 1000) + 600;
     await router.swapExactTokensForTokens(amt, 0, [swapFrom, swapTo], account, deadline);
     alert("✅ Swap sukses!");
   }
@@ -179,4 +177,4 @@ if (network.chainId !== 16601) {
       </div>
     </main>
   );
-          }
+}
