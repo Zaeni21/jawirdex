@@ -65,6 +65,11 @@ export default function Home() {
     } catch (err) {
       console.error("❌ Wallet connect error:", err);
     }
+    const network = await provider.getNetwork();
+console.log("🛰️ Connected to chainId:", network.chainId);
+if (network.chainId !== 16601) {
+  alert("❗ Kamu belum berada di jaringan 0G Galileo (16601)");
+}
   }
 
   async function approveAndAddLiquidity() {
