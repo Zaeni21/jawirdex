@@ -12,8 +12,39 @@ const ABI_ROUTER = [ "function swapExactTokensForTokens(uint amountIn, uint amou
 
 export default function Home() { const [provider, setProvider] = useState(); const [signer, setSigner] = useState(); const [account, setAccount] = useState(""); const [amountA, setAmountA] = useState(""); const [amountB, setAmountB] = useState(""); const [swapFrom, setSwapFrom] = useState(""); const [swapTo, setSwapTo] = useState(""); const [swapAmount, setSwapAmount] = useState("");
 
-async function connect() { if (!window.ethereum) return alert("Please install MetaMask"); const provider = new ethers.BrowserProvider(window.ethereum); await provider.send("eth_requestAccounts", []); const signer = await provider.getSigner(); setProvider(provider); setSigner(signer); setAccount(await signer.getAddress()); }
+async function connect() {
+  if (!window.ethereum) return alert("Please install MetaMask");
 
+  const chainIdHex = "0x40d1"; // 16601 in hex
+  const chainParams = {
+    chainId: chainIdHex,
+    chainName: "0G-Galileo-Testnet",
+    nativeCurrency: {
+      name: "OG",
+      symbol: "OG",
+      decimals: 18,
+    },
+    rpcUrls: ["https://evmrpc-testnet.0g.ai/"],
+    blockExplorerUrls: ["https://chainscan-galileo.0g.ai/"]
+  };
+
+  try {
+    await window.ethereum.request({
+      method: "wallet_addEthereumChain",
+      params: [chainParams],
+    });
+  } catch (err) {
+    console.error("Switch chain error:", err);
+  }
+
+  const provider = new ethers.BrowserProvider(window.ethereum);
+  await provider.send("eth_requestAccounts", []);
+  const signer = await provider.getSigner();
+  setProvider(provider);
+  setSigner(signer);
+  setAccount(await signer.getAddress());
+}
+                                
 async function approveAndAddLiquidity() { const tokenA = new ethers.Contract(JWR_TOKEN, ABI_ERC20, signer); const tokenB = new ethers.Contract(USDT_TOKEN, ABI_ERC20, signer); const router = new ethers.Contract(ROUTER, ABI_ROUTER, signer);
 
 const amtA = ethers.parseUnits(amountA || "0", 18);
