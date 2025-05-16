@@ -80,38 +80,78 @@ alert("Swap successful!");
 
 }
 
-return ( <main className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-gray-800 text-white p-6"> <div className="max-w-xl mx-auto space-y-10"> <h1 className="text-4xl font-bold text-center text-cyan-400 drop-shadow-md">JWR Mini DEX</h1>
+return (
+  <main className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-gray-800 text-white p-6">
+    <div className="max-w-xl mx-auto space-y-10">
+      <h1 className="text-4xl font-bold text-center text-cyan-400 drop-shadow-md">JWR Mini DEX</h1>
 
-{!account ? (
-      <button onClick={connect} className="w-full py-3 bg-cyan-600 hover:bg-cyan-500 rounded-xl font-semibold shadow-lg">Connect Wallet</button>
-    ) : (
-      <>
-        <div className="bg-gray-900 rounded-xl p-5 shadow-md">
-          <h2 className="text-xl mb-4 text-cyan-300 font-semibold">Add Liquidity</h2>
-          <input type="text" placeholder="Amount JWR" className="w-full p-3 mb-3 bg-gray-800 rounded border border-gray-700" value={amountA} onChange={e => setAmountA(e.target.value)} />
-          <input type="text" placeholder="Amount USDT" className="w-full p-3 mb-4 bg-gray-800 rounded border border-gray-700" value={amountB} onChange={e => setAmountB(e.target.value)} />
-          <button onClick={approveAndAddLiquidity} className="w-full py-2 bg-green-600 hover:bg-green-500 rounded font-semibold">Add Liquidity</button>
-        </div>
+      {!account ? (
+        <button
+          onClick={connect}
+          className="w-full py-3 bg-cyan-600 hover:bg-cyan-500 rounded-xl font-semibold shadow-lg"
+        >
+          Connect Wallet
+        </button>
+      ) : (
+        <>
+          <div className="bg-gray-900 rounded-xl p-5 shadow-md">
+            <h2 className="text-xl mb-4 text-cyan-300 font-semibold">Add Liquidity</h2>
+            <input
+              type="text"
+              placeholder="Amount JWR"
+              className="w-full p-3 mb-3 bg-gray-800 rounded border border-gray-700"
+              value={amountA}
+              onChange={(e) => setAmountA(e.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="Amount USDT"
+              className="w-full p-3 mb-4 bg-gray-800 rounded border border-gray-700"
+              value={amountB}
+              onChange={(e) => setAmountB(e.target.value)}
+            />
+            <button
+              onClick={approveAndAddLiquidity}
+              className="w-full py-2 bg-green-600 hover:bg-green-500 rounded font-semibold"
+            >
+              Add Liquidity
+            </button>
+          </div>
 
-        <div className="bg-gray-900 rounded-xl p-5 shadow-md">
-          <h2 className="text-xl mb-4 text-cyan-300 font-semibold">Swap</h2>
-          <select className="w-full p-3 mb-3 bg-gray-800 rounded border border-gray-700" onChange={e => setSwapFrom(e.target.value)}>
-            <option value="">Select Token From</option>
-            <option value={JWR_TOKEN}>JWR</option>
-            <option value={USDT_TOKEN}>USDT</option>
-          </select>
-          <select className="w-full p-3 mb-3 bg-gray-800 rounded border border-gray-700" onChange={e => setSwapTo(e.target.value)}>
-            <option value="">Select Token To</option>
-            <option value={JWR_TOKEN}>JWR</option>
-            <option value={USDT_TOKEN}>USDT</option>
-          </select>
-          <input type="text" placeholder="Amount to Swap" className="w-full p-3 mb-4 bg-gray-800 rounded border border-gray-700" value={swapAmount} onChange={e => setSwapAmount(e.target.value)} />
-          <button onClick={approveAndSwap} className="w-full py-2 bg-purple-600 hover:bg-purple-500 rounded font-semibold">Swap</button>
-        </div>
-      </>
-    )}
-  </div>
-</main>
-
-); }
-
+          <div className="bg-gray-900 rounded-xl p-5 shadow-md">
+            <h2 className="text-xl mb-4 text-cyan-300 font-semibold">Swap</h2>
+            <select
+              className="w-full p-3 mb-3 bg-gray-800 rounded border border-gray-700"
+              onChange={(e) => setSwapFrom(e.target.value)}
+            >
+              <option value="">Select Token From</option>
+              <option value={JWR_TOKEN}>JWR</option>
+              <option value={USDT_TOKEN}>USDT</option>
+            </select>
+            <select
+              className="w-full p-3 mb-3 bg-gray-800 rounded border border-gray-700"
+              onChange={(e) => setSwapTo(e.target.value)}
+            >
+              <option value="">Select Token To</option>
+              <option value={JWR_TOKEN}>JWR</option>
+              <option value={USDT_TOKEN}>USDT</option>
+            </select>
+            <input
+              type="text"
+              placeholder="Amount to Swap"
+              className="w-full p-3 mb-4 bg-gray-800 rounded border border-gray-700"
+              value={swapAmount}
+              onChange={(e) => setSwapAmount(e.target.value)}
+            />
+            <button
+              onClick={approveAndSwap}
+              className="w-full py-2 bg-purple-600 hover:bg-purple-500 rounded font-semibold"
+            >
+              Swap
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  </main>
+);
